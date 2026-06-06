@@ -81,3 +81,63 @@ if command failed make script executable
 chmod +x ./get-token.sh
 ```
 
+
+## Task 8 — Deploy (AWS CDK) + PostgreSQL (RDS)
+
+The Nest app is wrapped into a single AWS Lambda (via `@codegenie/serverless-express`)
+and deployed with **AWS CDK** behind API Gateway. Persistence is PostgreSQL on RDS
+using **TypeORM**. No Serverless Framework is used.
+
+### 1. Configure credentials
+
+Copy `env.example` to `.env` and fill the RDS connection:
+
+```bash
+cp env.example .env
+```
+
+```
+DB_HOST=<your-rds-endpoint>
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=<your-password>
+DB_NAME=cart
+DB_SSL=true
+```
+
+`.env` is git-ignored. The CDK app loads it and passes the values to the lambda
+environment.
+
+### 2. Deploy
+
+```bash
+npm run cdk:deploy
+```
+
+Outputs:
+- `ApiUrl` — Cart Service base URL
+- `LambdaSecurityGroupId` — security group of the lambda
+
+### 3. Let the lambda reach the private RDS
+
+The RDS instance is **private** (no public access). After the first deploy:
+
+1. EC2 → Security Groups → the RDS security group (`cart-db-sg`)
+2. Add inbound rule: type **PostgreSQL**, port **5432**, source = the
+   `LambdaSecurityGroupId` value from the deploy output.
+
+### 4. Schema + seed
+
+Schema and test data are created automatically by **TypeORM migrations**
+(`migrationsRun: true`) the first time the lambda connects. The same SQL is also
+stored in `db/init.sql` and `src/database/migrations/`.
+
+### Endpoints
+
+- `GET  /api/profile/cart` — current open cart items
+- `PUT  /api/profile/cart` — add/update/remove an item
+- `DELETE /api/profile/cart` — clear the open cart
+- `PUT  /api/profile/cart/order` — checkout (transactional; sets cart status to `ORDERED`)
+- `GET  /api/profile/cart/order` — list orders
+
+All cart endpoints use Basic auth (`Authorization: Basic base64(login:password)`).
