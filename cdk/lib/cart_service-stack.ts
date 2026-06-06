@@ -1,7 +1,6 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as lambdaNodeJs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apiGateway from 'aws-cdk-lib/aws-apigateway';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as path from 'path';
@@ -34,10 +33,12 @@ export class CartServiceStack extends cdk.Stack {
       securityGroupName: 'cart-lambda-sg',
     });
 
-    const cartLambda = new lambdaNodeJs.NodejsFunction(this, 'CartServiceFunction', {
+    const cartLambda = new lambda.Function(this, 'CartServiceFunction', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      entry: path.join(__dirname, '../../src/lambda.ts'),
-      handler: 'handler',
+      // Bundle is built by scripts/build-lambda.mjs (esbuild + decorator
+      // metadata) so NestJS dependency injection works after bundling.
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../dist-lambda')),
+      handler: 'index.handler',
       functionName: 'cartService',
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
@@ -48,24 +49,6 @@ export class CartServiceStack extends cdk.Stack {
       environment: {
         ...props.dbEnv,
         NODE_OPTIONS: '--enable-source-maps',
-      },
-      bundling: {
-        externalModules: ['@aws-sdk/*'],
-        // pg / typeorm rely on optional drivers; keep them bundled.
-        nodeModules: ['pg', 'typeorm', 'reflect-metadata'],
-        // NestJS lazily requires these optional packages; they are not used by
-        // this app, so leave them as external (Nest handles their absence).
-        esbuildArgs: {
-          '--external:@nestjs/microservices': true,
-          '--external:@nestjs/websockets': true,
-          '--external:@nestjs/websockets/socket-module': true,
-          '--external:@nestjs/microservices/microservices-module': true,
-          '--external:class-transformer': true,
-          '--external:class-validator': true,
-          '--external:@fastify/static': true,
-          '--external:cache-manager': true,
-          '--external:@nestjs/platform-socket.io': true,
-        },
       },
     });
 

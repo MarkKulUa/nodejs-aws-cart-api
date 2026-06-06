@@ -19,9 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "build:lambda": "node scripts/build-lambda.mjs",
     "cdk": "cdk",
-    "cdk:deploy": "npm run build && cdk deploy",
-    "cdk:synth": "cdk synth",
+    "cdk:deploy": "npm run build:lambda && cdk deploy",
+    "cdk:synth": "npm run build:lambda && cdk synth",
     "typeorm": "typeorm-ts-node-commonjs -d src/database/data-source.ts",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert"
