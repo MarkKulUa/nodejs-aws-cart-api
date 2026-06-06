@@ -1,30 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../../database/entities';
 import { User } from '../models';
 
 @Injectable()
 export class UsersService {
-  private readonly users: Record<string, User>;
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
-  constructor() {
-    this.users = {};
+  async findOne(name: string): Promise<User | undefined> {
+    const user = await this.userRepository.findOne({ where: { name } });
+    return user ?? undefined;
   }
 
-  findOne(name: string): User {
-    for (const id in this.users) {
-      if (this.users[id].name === name) {
-        return this.users[id];
-      }
-    }
-    return;
-  }
-
-  createOne({ name, password }: User): User {
-    const id = randomUUID();
-    const newUser = { id, name, password };
-
-    this.users[id] = newUser;
-
-    return newUser;
+  async createOne({ name, password, email }: User): Promise<User> {
+    const user = this.userRepository.create({ name, password, email });
+    return this.userRepository.save(user);
   }
 }

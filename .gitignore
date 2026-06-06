@@ -1,6 +1,9 @@
 # compiled output
 /dist
 /node_modules
+cdk.out
+cdk/**/*.js
+cdk/**/*.d.ts
 
 # Logs
 logs
