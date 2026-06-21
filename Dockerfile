@@ -19,8 +19,8 @@ RUN npm run build
 # Stage 3: minimal runtime — alpine + prod deps + compiled dist only.
 FROM node:20-alpine AS runtime
 WORKDIR /app
-ENV NODE_ENV=production
-ENV APP_PORT=4000
+ENV NODE_ENV=production \
+    APP_PORT=4000
 USER node
 COPY --chown=node:node --from=deps /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/dist ./dist
