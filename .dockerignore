@@ -1,0 +1,39 @@
+# Dependencies and build output (regenerated inside the image)
+node_modules
+dist
+dist-lambda
+cdk.out
+cdk
+
+# Git metadata
+.git
+.gitignore
+
+# Test coverage / reports
+coverage
+.nyc_output
+
+# Logs
+*.log
+logs
+
+# Local env / secrets (injected by Elastic Beanstalk at runtime)
+.env
+env.example
+
+# IDE / editor settings
+.idea
+.vscode
+
+# OS junk files
+.DS_Store
+
+# Docker files, CI and docs
+Dockerfile
+.dockerignore
+README.md
+
+# Tests and lint/format configs
+test
+.eslintrc.js
+.prettierrc
