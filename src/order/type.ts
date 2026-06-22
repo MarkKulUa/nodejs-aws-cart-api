@@ -38,5 +38,6 @@ export type CreateOrderPayload = {
   cartId: string;
   items: Array<{ productId: string; count: number }>;
   address: Address;
+  payment?: Record<string, unknown>;
   total: number;
 };

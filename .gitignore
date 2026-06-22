@@ -1,6 +1,10 @@
 # compiled output
 /dist
+/dist-lambda
 /node_modules
+cdk.out
+cdk/**/*.js
+cdk/**/*.d.ts
 
 # Logs
 logs

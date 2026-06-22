@@ -1,0 +1,35 @@
+# Dependencies and build output (regenerated inside the image)
+node_modules
+dist
+dist-lambda
+cdk.out
+cdk
+
+# Git metadata
+.git
+.gitignore
+
+# EB CLI local state
+.elasticbeanstalk
+
+# Test coverage / reports
+coverage
+.nyc_output
+
+# Logs
+*.log
+logs
+
+# Local env / secrets (injected via EB --envvars / config)
+.env
+env.example
+
+# IDE / editor settings
+.idea
+.vscode
+
+# OS junk files
+.DS_Store
+
+# Tests
+test
