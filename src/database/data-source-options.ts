@@ -7,6 +7,7 @@ import {
 } from './entities';
 import { InitSchema1717000000000 } from './migrations/1717000000000-InitSchema';
 import { SeedData1717000000001 } from './migrations/1717000000001-SeedData';
+import { AddCartItemProductFields1717000000002 } from './migrations/1717000000002-AddCartItemProductFields';
 
 /**
  * Builds TypeORM connection options from environment variables.
@@ -22,7 +23,11 @@ export const getDataSourceOptions = (): DataSourceOptions => ({
   entities: [UserEntity, CartEntity, CartItemEntity, OrderEntity],
   // Migration classes are referenced directly (not via a glob) so they survive
   // esbuild bundling into a single file inside the lambda.
-  migrations: [InitSchema1717000000000, SeedData1717000000001],
+  migrations: [
+    InitSchema1717000000000,
+    SeedData1717000000001,
+    AddCartItemProductFields1717000000002,
+  ],
   // Schema is managed by migrations only.
   synchronize: false,
   // Run pending migrations automatically on app start. This is how the

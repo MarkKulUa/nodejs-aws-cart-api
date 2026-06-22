@@ -30,9 +30,12 @@ CREATE TABLE IF NOT EXISTS carts (
 );
 
 CREATE TABLE IF NOT EXISTS cart_items (
-  cart_id    uuid NOT NULL,
-  product_id uuid NOT NULL,
-  count      integer NOT NULL,
+  cart_id     uuid NOT NULL,
+  product_id  uuid NOT NULL,
+  count       integer NOT NULL,
+  title       varchar NOT NULL DEFAULT '',
+  description varchar NOT NULL DEFAULT '',
+  price       numeric NOT NULL DEFAULT 0,
   PRIMARY KEY (cart_id, product_id),
   CONSTRAINT fk_cart_items_cart FOREIGN KEY (cart_id)
     REFERENCES carts (id) ON DELETE CASCADE
@@ -63,11 +66,11 @@ VALUES
   ('33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111', 'ORDERED')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO cart_items (cart_id, product_id, count)
+INSERT INTO cart_items (cart_id, product_id, count, title, description, price)
 VALUES
-  ('22222222-2222-2222-2222-222222222222', '7567ec4b-b10c-48c5-9345-fc73c48a80aa', 2),
-  ('22222222-2222-2222-2222-222222222222', '7567ec4b-b10c-48c5-9345-fc73c48a80a1', 1),
-  ('33333333-3333-3333-3333-333333333333', '7567ec4b-b10c-48c5-9345-fc73c48a80aa', 5)
+  ('22222222-2222-2222-2222-222222222222', '7567ec4b-b10c-48c5-9345-fc73c48a80aa', 2, 'Seed Product A', 'Seed product A description', 29.99),
+  ('22222222-2222-2222-2222-222222222222', '7567ec4b-b10c-48c5-9345-fc73c48a80a1', 1, 'Seed Product B', 'Seed product B description', 49.5),
+  ('33333333-3333-3333-3333-333333333333', '7567ec4b-b10c-48c5-9345-fc73c48a80aa', 5, 'Seed Product A', 'Seed product A description', 29.99)
 ON CONFLICT (cart_id, product_id) DO NOTHING;
 
 INSERT INTO orders (id, user_id, cart_id, payment, delivery, comments, status, total)

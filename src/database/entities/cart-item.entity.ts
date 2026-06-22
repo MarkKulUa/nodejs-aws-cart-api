@@ -12,6 +12,22 @@ export class CartItemEntity {
   @Column({ type: 'integer' })
   count: number;
 
+  @Column({ type: 'varchar', default: '' })
+  title: string;
+
+  @Column({ type: 'varchar', default: '' })
+  description: string;
+
+  @Column({
+    type: 'numeric',
+    default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string | null) => (value == null ? 0 : parseFloat(value)),
+    },
+  })
+  price: number;
+
   @ManyToOne(() => CartEntity, (cart) => cart.items, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'cart_id' })
   cart: CartEntity;

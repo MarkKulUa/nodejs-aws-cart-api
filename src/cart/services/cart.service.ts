@@ -20,9 +20,9 @@ const toCartModel = (entity: CartEntity): Cart => ({
     (item): CartItem => ({
       product: {
         id: item.product_id,
-        title: '',
-        description: '',
-        price: 0,
+        title: item.title ?? '',
+        description: item.description ?? '',
+        price: Number(item.price ?? 0),
       },
       count: item.count,
     }),
@@ -86,6 +86,9 @@ export class CartService {
         cart_id: cart.id,
         product_id: productId,
         count: payload.count,
+        title: payload.product.title ?? '',
+        description: payload.product.description ?? '',
+        price: payload.product.price ?? 0,
       });
     }
 
